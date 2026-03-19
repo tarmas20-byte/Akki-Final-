@@ -1,1 +1,57 @@
+/* Global styling */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: #f7efd7;
+  color: #333;
+}
 
+/* Navigation bar */
+nav {
+  background: #382bo4;
+  padding: 15px;
+  text-align: center;
+}
+
+nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Page container */
+.container {
+  width: 80%;
+  margin: auto;
+  padding; 30px, 0;
+}
+
+/* Headings*/
+h1, h2, h3, h4 {
+  color: #010921;
+}
+
+/* Card-style content boxes */
+.card {
+  background: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0,1);
+}
+
+/* Footer */
+footer {
+  background: #e9f2ce;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+}
+  
+  
