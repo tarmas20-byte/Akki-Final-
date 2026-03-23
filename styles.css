@@ -53,5 +53,18 @@ footer {
   padding: 15px;
   margin-top: 40px;
 }
+
+.homepage-banner {
+  width: 100%;
+  height: 20vh; /* 20% of the screen height */
+  object-fit: cover; /* makes the image crop nicely */
+  display: block;
+  margin top: 20px;
+}
+
+.homepage-container {
+  text-align: center;
+  padding: 40px 20px;
+}
   
   
