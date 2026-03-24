@@ -70,7 +70,7 @@ footer {
 .image-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  gap: 40px;
   padding: 20px;
 }
 
@@ -88,7 +88,7 @@ footer {
 
 .grid-item img {
   width: 70%;  /* make the image less wide */
-  height: 250px; /* make it taller */
+  height: 400px; /* make it taller */
   object-fit: cover;
   border-radius: 8px;
 }
