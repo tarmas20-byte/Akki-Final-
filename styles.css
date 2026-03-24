@@ -105,6 +105,18 @@ footer {
 .center-section {
   text-align: center;
 }
+
+.image-text {
+  display: flex;
+  align-items: center; /* vertically centers text */
+  gap: 20px; /* space between image and text */
+}
+
+.image-text img {
+  width: 150px; /* adjust size */
+  height: auto;
+  border-radius: 8px;
+}
   
   
   
