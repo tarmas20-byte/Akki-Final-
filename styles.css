@@ -143,11 +143,11 @@ footer {
 /* Buttons */
 .poll-btn {
     padding: 10px 18px;
-    margin: 5px;
+    margin: center;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    background: #e0e0e0;
+    background: #4a2817;
     transition: 0.2s;
 }
 
