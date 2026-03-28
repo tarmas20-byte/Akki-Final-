@@ -73,25 +73,22 @@
 
       <button type="submit">Submit</button>
     </form>
+    </div>
 
       <script>
-        document.getElementById("contactForm").addEventListener("submit", async (e) => {
-          e.preventDefault();
+document.getElementById("contactForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-        const data = Object.fromEntries(new FormData(e.target).entries());
+  const data = Object.fromEntries(new FormData(e.target).entries());
 
-        await fetch("https://script.google.com/macros/s/AKfycbw0Wr2IIbMTFupc_R4mORsyL-BIZA4B3s7F5KKfQTJ9sGsNKX0WrYkQMyaRSIkjLx4V/exec", {
-          method: "POST",
-          body: JSON.stringify(data)
-        });
+  await fetch("https://script.google.com/macros/s/AKfycbw0Wr2IIbMTFupc_R4mORsyL-BIZA4B3s7F5KKfQTJ9sGsNKX0WrYkQMyaRSIkjLx4V/exec", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
 
-        alert("Submitted");
-        });
-      </script>
-    </div>
-    
-        
-      
+  alert("Submitted!");
+});
+</script>
    
       <footer>
         © 2026 Sydney Housing Watch Research Foundation. All rights reserved.
