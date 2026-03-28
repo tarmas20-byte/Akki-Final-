@@ -75,18 +75,28 @@
     </form>
     </div>
 
-      <script>
+ <script>
 document.getElementById("contactForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const data = Object.fromEntries(new FormData(e.target).entries());
 
-  await fetch("https://script.google.com/macros/s/AKfycbw0Wr2IIbMTFupc_R4mORsyL-BIZA4B3s7F5KKfQTJ9sGsNKX0WrYkQMyaRSIkjLx4V/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  });
+  try {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbw0Wr2IIbMTFupc_R4mORsyL-BIZA4B3s7F5KKfQTJ9sGsNKX0WrYkQMyaRSIkjLx4V/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
+    });
 
-  alert("Submitted!");
+    alert("Submitted!");
+    document.getElementById("contactForm").reset();
+  } catch (error) {
+    console.error("Error:", error);
+    alert("There was an error submitting the form. Please try again.");
+  }
 });
 </script>
    
