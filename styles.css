@@ -227,11 +227,18 @@ footer {
 }
 
 .poll-button {
-  backgroud: #5C738A;
-  width: 150px;
-  height: 100px;
-  text-align: center;
-  margin: 0;
+  backgroud-color: #5C738A;
+  color: white;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+
+  display: block;      /* allows centering */
+  margin: 20px auto;   /* centers the button horizontally */
+
+  font-size: 18px;
+  font-weight: bold;
 }
 
   
