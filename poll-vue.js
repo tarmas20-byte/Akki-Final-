@@ -57,7 +57,6 @@ document.getElementById("home-btn").onclick = () => {
   window.location.href = "index.html"; 
 };
 
-// Generate unique user ID
 function generateUserId() {
   const stored = localStorage.getItem("quizUserId");
   if (stored) {
@@ -125,6 +124,7 @@ function updateProgress() {
   const percent = ((currentQuestion) / questions.length) * 100;
   progressBar.style.width = percent + "%";
 }
+
 async function showResults() {
   pollContainer.classList.add("hidden");
   progressContainer.classList.add("hidden");
@@ -133,17 +133,12 @@ async function showResults() {
   const percentageScore = (score / questions.length) * 100;
   scoreText.textContent = `You scored ${score} out of ${questions.length}`;
 
-  // Save to Supabase
   if (!supabaseClient) {
-    scoreText.innerHTML += `<br><br><strong style="color: red;">ERROR: Supabase client not found</strong>`;
-    console.log("supabaseClient is undefined");
+    scoreText.innerHTML += `<br><br><strong style="color: red;">ERROR: Supabase not initialized</strong>`;
     return;
   }
 
   try {
-    console.log("Saving to Supabase...");
-    
-    // Try to insert
     const insertResult = await supabaseClient
       .from("quiz_responses")
       .insert([
@@ -156,43 +151,39 @@ async function showResults() {
         }
       ]);
 
-    console.log("Insert result:", insertResult);
-
     if (insertResult.error) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Save failed: ${insertResult.error.message}</strong>`;
-      console.error("Insert error:", insertResult.error);
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${insertResult.error.message}</strong>`;
       return;
     }
 
-    console.log("Insert successful, now reading stats...");
-
-    // Try to read all responses
     const selectResult = await supabaseClient
       .from("quiz_responses")
       .select("*");
 
-    console.log("Select result:", selectResult);
-
     if (selectResult.error) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Stats failed: ${selectResult.error.message}</strong>`;
-      console.error("Select error:", selectResult.error);
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${selectResult.error.message}</strong>`;
       return;
     }
 
     const allData = selectResult.data;
-    console.log("Data returned:", allData);
-
     if (allData && allData.length > 0) {
       const totalResponses = allData.length;
       const avgScore = (allData.reduce((sum, r) => sum + r.percentage_score, 0) / totalResponses).toFixed(1);
       
       scoreText.innerHTML += `<br><br><strong>Quiz Statistics:</strong><br>Total takers: ${totalResponses}<br>Average score: ${avgScore}%`;
-    } else {
-      scoreText.innerHTML += `<br><br><strong>✅ Response saved!</strong>`;
     }
-
   } catch (error) {
     scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${error.message}</strong>`;
-    console.error("Full error:", error);
   }
+}
+
+function restartQuiz() {
+  currentQuestion = 0;
+  score = 0;
+
+  resultScreen.classList.add("hidden");
+  pollContainer.classList.remove("hidden");
+  progressContainer.classList.remove("hidden");
+
+  loadQuestion();
 }
