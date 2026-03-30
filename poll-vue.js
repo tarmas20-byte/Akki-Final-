@@ -127,11 +127,14 @@ async function showResults() {
 
   // Save to Supabase
   try {
-    await supabaseClient
+    console.log("Attempting to save with userId:", userId);
+    console.log("supabaseClient exists?", !!supabaseClient);
+    
+    const { data, error } = await supabaseClient
       .from("quiz_responses")
       .insert([
         {
-          user_id: userId,
+          user_id: userId + "_" + Date.now(),
           score: score,
           total_questions: questions.length,
           answers: Array.from({length: questions.length}, (_, i) => i),
@@ -139,29 +142,30 @@ async function showResults() {
         }
       ]);
 
+    console.log("Insert response - Data:", data, "Error:", error);
+
+    if (error) {
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${error.message}</strong>`;
+      return;
+    }
+
     // Get stats and display
-    const { data, error } = await supabaseClient
+    const { data: statsData, error: statsError } = await supabaseClient
       .from("quiz_responses")
       .select("*");
 
-    if (data) {
-      const totalResponses = data.length;
-      const avgScore = (data.reduce((sum, r) => sum + r.percentage_score, 0) / totalResponses).toFixed(1);
+    console.log("Stats - Data:", statsData, "Error:", statsError);
+
+    if (statsData && statsData.length > 0) {
+      const totalResponses = statsData.length;
+      const avgScore = (statsData.reduce((sum, r) => sum + r.percentage_score, 0) / totalResponses).toFixed(1);
       
       scoreText.innerHTML += `<br><br><strong>Quiz Statistics:</strong><br>Total takers: ${totalResponses}<br>Average score: ${avgScore}%`;
+    } else {
+      scoreText.innerHTML += `<br><br><strong>✅ Quiz saved! (stats loading...)</strong>`;
     }
   } catch (error) {
-    console.error("Error saving to Supabase:", error);
+    console.error("Error:", error);
+    scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${error.message}</strong>`;
   }
-}
-
-function restartQuiz() {
-  currentQuestion = 0;
-  score = 0;
-
-  resultScreen.classList.add("hidden");
-  pollContainer.classList.remove("hidden");
-  progressContainer.classList.remove("hidden");
-
-  loadQuestion();
 }
