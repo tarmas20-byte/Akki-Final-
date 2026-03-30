@@ -1,3 +1,12 @@
+// Initialize Supabase directly at the top
+const SUPABASE_URL = "https://bixaifcnznkkqmemfqes.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJpeGFpZmNuem5ra3FtZW1mcWVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NDk4ODAsImV4cCI6MjA5MDQyNTg4MH0._6L8e77pp6iFD-CecNPc_-GyhaWQu8fqsVKpVGKuf1w";
+
+let supabaseClient;
+if (typeof supabase !== 'undefined') {
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
 const questions = [
   {
     text: "What is the #1 cause of Sydney's housing affordability crisis?",
@@ -126,46 +135,59 @@ async function showResults() {
   scoreText.textContent = `You scored ${score} out of ${questions.length}`;
 
   // Save to Supabase
+  if (!supabaseClient) {
+    scoreText.innerHTML += `<br><br><strong style="color: red;">Supabase not initialized</strong>`;
+    return;
+  }
+
   try {
-    console.log("Attempting to save with userId:", userId);
-    console.log("supabaseClient exists?", !!supabaseClient);
-    
-    const { data, error } = await supabaseClient
+    const { data: insertData, error: insertError } = await supabaseClient
       .from("quiz_responses")
       .insert([
         {
           user_id: userId + "_" + Date.now(),
           score: score,
           total_questions: questions.length,
-          answers: Array.from({length: questions.length}, (_, i) => i),
+          answers: [0, 1, 2, 3],
           percentage_score: percentageScore
         }
       ]);
 
-    console.log("Insert response - Data:", data, "Error:", error);
-
-    if (error) {
-      scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${error.message}</strong>`;
+    if (insertError) {
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${insertError.message}</strong>`;
       return;
     }
 
     // Get stats and display
-    const { data: statsData, error: statsError } = await supabaseClient
+    const { data: allData, error: selectError } = await supabaseClient
       .from("quiz_responses")
       .select("*");
 
-    console.log("Stats - Data:", statsData, "Error:", statsError);
+    if (selectError) {
+      scoreText.innerHTML += `<br><br><strong style="color: red;">Error reading stats: ${selectError.message}</strong>`;
+      return;
+    }
 
-    if (statsData && statsData.length > 0) {
-      const totalResponses = statsData.length;
-      const avgScore = (statsData.reduce((sum, r) => sum + r.percentage_score, 0) / totalResponses).toFixed(1);
+    if (allData && allData.length > 0) {
+      const totalResponses = allData.length;
+      const avgScore = (allData.reduce((sum, r) => sum + r.percentage_score, 0) / totalResponses).toFixed(1);
       
       scoreText.innerHTML += `<br><br><strong>Quiz Statistics:</strong><br>Total takers: ${totalResponses}<br>Average score: ${avgScore}%`;
     } else {
-      scoreText.innerHTML += `<br><br><strong>✅ Quiz saved! (stats loading...)</strong>`;
+      scoreText.innerHTML += `<br><br><strong>✅ Your response saved!</strong>`;
     }
   } catch (error) {
-    console.error("Error:", error);
-    scoreText.innerHTML += `<br><br><strong style="color: red;">Error: ${error.message}</strong>`;
+    scoreText.innerHTML += `<br><br><strong style="color: red;">Catch Error: ${error.message}</strong>`;
   }
+}
+
+function restartQuiz() {
+  currentQuestion = 0;
+  score = 0;
+
+  resultScreen.classList.add("hidden");
+  pollContainer.classList.remove("hidden");
+  progressContainer.classList.remove("hidden");
+
+  loadQuestion();
 }
