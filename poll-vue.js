@@ -208,3 +208,8 @@ backToHomeButton.addEventListener('click', function() {
     // Logic for going back to home
 });
 
+document.getElementById("start-btn").onclick = startQuiz;
+document.getElementById("retry-btn").onclick = restartQuiz;
+document.getElementById("home-btn").onclick = () => {
+  window.location.href = "./index.html"; 
+};
